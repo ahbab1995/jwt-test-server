@@ -15,6 +15,9 @@ app.get("/", (req, res) => {
 app.post("/login", (req, res) => {
     const user = req.body
     console.log(user)
+    if (user.email === 'khan@gmail.com' && user.password === '123456') {
+        
+    }
   res.send({ success: true });
 });
 
