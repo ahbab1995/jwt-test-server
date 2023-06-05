@@ -13,13 +13,22 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+const verifyJWT = (req,res,next) =>{
+  const authHeader = req.headers.authorization;
+    if(!authHeader){
+        return res.status(401).send({message: 'unauthorized'});
+    }
+    const token = authHeader.split(' ')[1];
+}
+
 app.post("/login", (req, res) => {
   const user = req.body;
+
   if (user.email === "khan@gmail.com" && user.password === "123456") {
     const accessToken = jwt.sign(
       { email: user.email },
       process.env.ACCESS_TOKEN_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "10h" }
     );
     res.send({ success: true, accessToken });
   } else {
