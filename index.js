@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
-var cors = require("cors");
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const port = 5000;
 
@@ -13,12 +14,17 @@ app.get("/", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-    const user = req.body
-    console.log(user)
-    if (user.email === 'khan@gmail.com' && user.password === '123456') {
-        
-    }
-  res.send({ success: true });
+  const user = req.body;
+  if (user.email === "khan@gmail.com" && user.password === "123456") {
+    const accessToken = jwt.sign(
+      { email: user.email },
+      process.env.ACCESS_TOKEN_KEY,
+      { expiresIn: "1h" }
+    );
+    res.send({ success: true, accessToken });
+  } else {
+    res.send({ success: false });
+  }
 });
 
 app.listen(port, () => {
