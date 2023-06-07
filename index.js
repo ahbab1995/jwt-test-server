@@ -19,6 +19,13 @@ const verifyJWT = (req,res,next) =>{
         return res.status(401).send({message: 'unauthorized'});
     }
     const token = authHeader.split(' ')[1];
+    jwt.verify(token, process.env.ACCESS_TOKEN_KEY, (err, decoded) =>{
+      if(err){
+          return res.status(403).send({message: 'forbidden'})
+      }
+      req.decoded= decoded;
+      next();
+    })
 }
 
 app.post("/login", (req, res) => {
@@ -32,9 +39,14 @@ app.post("/login", (req, res) => {
     );
     res.send({ success: true, accessToken });
   } else {
-    res.send({ success: false });
+    res.status(401).send({success: false});
   }
 });
+
+app.get('/orderlist', verifyJWT, (req, res) =>{
+  res.send([{id: 1, item: 'alo'}, {id: 2, item: 'tomato'}])
+});
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
